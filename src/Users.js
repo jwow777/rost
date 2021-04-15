@@ -7,7 +7,8 @@ import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
 
 export default function Users({ setLoggedIn }) {
   const [users, setUsers] = useState([{}]);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState(null);
+  const [initialList, setInitialList] = useState([{}]);
 
   const logout = () => {
     localStorage.removeItem("jwt");
@@ -16,7 +17,10 @@ export default function Users({ setLoggedIn }) {
 
   const listUsers = () => {
     getContent(localStorage.jwt)
-      .then((res) => setUsers(res))
+      .then((res) => {
+        setInitialList(res)
+        setUsers(res)
+      })
       .catch((err) => console.log(err));
   }
   
@@ -37,28 +41,27 @@ export default function Users({ setLoggedIn }) {
   const handleChange = e => setSearch(e.target.value);
 
   const filterino = (search) => {
-    const list = users;
-    console.log(list)
-    return [...users].filter(el => {
+    return users.filter(el => {
       return el.username.toLowerCase().indexOf(search.toLowerCase()) > -1;
     });
   }
   
   useEffect(() => {
-    if (search) {
-      setUsers(filterino(search));
-    } 
+    if (!search) {
+      return setUsers(initialList)
+    } else {
+      return setUsers(filterino(search));
+    }
   }, [search]);
-  
   
   return (
     <main className="content">
-      <input type="text" placeholder="Поиск" value={search || ''} onChange={handleChange}/>
+      <input type="text" placeholder="Поиск по логину" value={search || ''} onChange={handleChange}/>
       <ul>
         <li>
-          <span>ID <ArrowDropDownIcon onClick={sortDown}/><ArrowDropUpIcon onClick={sortUp}/></span>
-          <span>Username</span>
-          <span>Last login</span>
+          <span className="content__list">ID <ArrowDropDownIcon onClick={sortDown}/><ArrowDropUpIcon onClick={sortUp}/></span>
+          <span className="content__list">Username</span>
+          <span className="content__list">Last login</span>
         </li>
         {users.map((item, index) => (
           <User item={item} key={index} />
