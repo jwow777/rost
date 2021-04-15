@@ -1,3 +1,4 @@
+import { CssBaseline } from "@material-ui/core";
 import { useEffect, useState } from "react";
 import { Route, Switch, useHistory } from "react-router";
 import Login from "./Login";
@@ -14,19 +15,26 @@ export default function App() {
       setLoggedIn(true);
       history.push('/');
     }
-    console.log(token)
   }, [history]);
 
   function handleLogin() {
     setLoggedIn(true);
   }
-  console.log(localStorage)
+
   return (
     <>
+      <CssBaseline />
         <Switch>
-          <ProtectRoute exact path='/' loggedIn={loggedIn} setLoggedIn={setLoggedIn} component={Users} />
+          <ProtectRoute 
+            exact path='/' 
+            loggedIn={loggedIn} 
+            setLoggedIn={setLoggedIn} 
+            component={Users} 
+          />
           <Route path='/sign-in'>
-            <Login handleLogin={handleLogin}/>
+            <Login 
+              handleLogin={handleLogin}
+            />
           </Route>
         </Switch>
     </>
